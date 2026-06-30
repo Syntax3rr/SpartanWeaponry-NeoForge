@@ -102,8 +102,14 @@ public class HeavyCrossbowItem extends CrossbowItem
             if (opt.isPresent()) {
                 IRangedTraitCallback callback = opt.get();
                 this.loadTicks =
-                        callback.modifyHeavyCrossbowLoadTime(this.material, this.loadTicks);
-                this.aimTicks = callback.modifyHeavyCrossbowAimTime(this.material, this.aimTicks);
+                        Math.max(
+                                1,
+                                callback.modifyHeavyCrossbowLoadTime(
+                                        this.material, this.loadTicks));
+                this.aimTicks =
+                        Math.max(
+                                1,
+                                callback.modifyHeavyCrossbowAimTime(this.material, this.aimTicks));
             }
         }
         this.modifiers = WeaponAttributeBuilder.buildGenericTraitItemAttributes(this.rangedTraits);
@@ -598,7 +604,7 @@ public class HeavyCrossbowItem extends CrossbowItem
     // ---- ---- ---- ---- ---- ---- ---- ----
     @Override
     public boolean isLoaded(ItemStack stack) {
-        return ItemStackDataHelper.getTag(stack).getBoolean(NBT_CHARGED);
+        return ItemStackDataHelper.getBoolean(stack, NBT_CHARGED);
     }
 
     @Override
@@ -630,7 +636,7 @@ public class HeavyCrossbowItem extends CrossbowItem
         int i =
                 EnchantmentHelper.getItemEnchantmentLevel(
                         enchantmentRegistry.get().getOrThrow(Enchantments.QUICK_CHARGE), stack);
-        return Mth.clamp(this.loadTicks - 5 * i, 0, this.loadTicks);
+        return Math.max(1, Mth.clamp(this.loadTicks - 5 * i, 0, this.loadTicks));
     }
 
     public int getFullLoadTicks(ItemStack stack, Level level) {
@@ -646,7 +652,7 @@ public class HeavyCrossbowItem extends CrossbowItem
     public int getAimTicks(ItemStack stack, RegistryAccess access) {
         if (access == null) return this.aimTicks;
         int i = ModEnchantments.getLevel(access, ModEnchantments.SHARPSHOOTER, stack);
-        return Mth.clamp(this.aimTicks - 2 * i, 0, this.aimTicks);
+        return Math.max(1, Mth.clamp(this.aimTicks - 2 * i, 0, this.aimTicks));
     }
 
     public int getAimTicks(ItemStack stack, Level level) {

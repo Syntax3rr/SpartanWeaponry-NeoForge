@@ -19,6 +19,12 @@ public final class ItemStackDataHelper {
         return stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
     }
 
+    public static boolean getBoolean(ItemStack stack, String key) {
+        return stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY)
+                .getUnsafe()
+                .getBoolean(key);
+    }
+
     public static void updateTag(ItemStack stack, Consumer<CompoundTag> updater) {
         CustomData.update(DataComponents.CUSTOM_DATA, stack, updater);
     }

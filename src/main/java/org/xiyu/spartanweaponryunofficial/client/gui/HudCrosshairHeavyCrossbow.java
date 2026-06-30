@@ -35,13 +35,14 @@ public class HudCrosshairHeavyCrossbow {
             // Fixed the crosshair size to account for the actual aim area, while retaining scaling.
             int offset = Mth.floor(mc.getWindow().getGuiScaledHeight() / 10.0);
             if (!equippedStack.isEmpty()
-                    && ItemStackDataHelper.getTag(equippedStack)
-                            .getBoolean(HeavyCrossbowItem.NBT_CHARGED)
+                    && ItemStackDataHelper.getBoolean(
+                            equippedStack, HeavyCrossbowItem.NBT_CHARGED)
                     && player.getTicksUsingItem() != 0) {
+                int aimTicks =
+                        Math.max(1, crossbowItem.getAimTicks(equippedStack, player.level()));
                 float percentage =
                         Mth.clamp(
-                                (player.getTicksUsingItem() + partialTicks)
-                                        / crossbowItem.getAimTicks(equippedStack, player.level()),
+                                (player.getTicksUsingItem() + partialTicks) / aimTicks,
                                 0.0f,
                                 1.0f);
                 // Scale before truncating; casting (1 - percentage) to int first would always

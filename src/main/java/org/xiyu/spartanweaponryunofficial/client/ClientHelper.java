@@ -142,11 +142,13 @@ public class ClientHelper {
                 crossbow,
                 ModelOverrides.PULL,
                 (stack, world, living, value) -> {
-                    if (living != null /*&& stack.getItem() == crossbow*/)
+                    if (living != null /*&& stack.getItem() == crossbow*/) {
+                        int fullLoadTicks =
+                                Math.max(1, crossbow.getFullLoadTicks(stack, world));
                         return crossbow.isLoaded(stack)
                                 ? 0.0f
-                                : (float) (crossbow.getLoadingTicks(stack, living))
-                                        / crossbow.getFullLoadTicks(stack, world);
+                                : (float) crossbow.getLoadingTicks(stack, living) / fullLoadTicks;
+                    }
                     return 0.0f;
                 });
         ItemProperties.register(
